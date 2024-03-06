@@ -1,0 +1,37 @@
+{% extends "basic1.html" %}
+{% block cont %}
+<main id="main" class="main">
+  <section class="section dashboard">
+    <div class="row">
+      <div class="col-lg-10">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <center>
+                <h5 class="card-title">Searched Train</h5>
+              </center>
+              <div id="reportsChart"></div>
+              <div class="card-body">
+                {% if searched_train %}
+                  <h6>Train Number: {{ searched_train.train_number }}</h6>
+                  <h6>Train Name: {{ searched_train.train_name }}</h6>
+                  <h6>Source Station: {{ searched_train.origin}}</h6>
+                  <h6>Destination Station: {{ searched_train.destination }}</h6>
+                  <h6>Departure Time: {{ searched_train.departure_time }}</h6>
+                  <h6>Arrival Time: {{ searched_train.arrival_time }}</h6>
+                  <!-- Add more fields as needed -->
+                {% else %}
+                  <p>{{ message }}</p>
+                {% endif %}
+                <center>
+                <p><a href="{% url 'u_search' %}">Back to Search Trains</a></p>
+                </center>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}

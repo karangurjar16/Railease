@@ -11,5 +11,7 @@ urlpatterns = [
     path('user_logout/', user_logout, name='user_logout'),
     # path('user_logout/', user_logout, name='user_logout'),
     path('book/', book, name='book'),
+    path('search/',u_search, name='u_search'),
+    path('get_train_number_suggestions/', get_train_number_suggestions, name='get_train_number_suggestions'),   
 
 ]

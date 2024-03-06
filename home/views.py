@@ -9,6 +9,7 @@ from django.http import Http404
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import authenticate, login
 from .forms import RegistrationForm, LoginForm
+from .models import *
 
 # Create your views here.
 def index(request):
@@ -53,6 +54,36 @@ def book(request):
         return redirect('user_login')
 def booking(request):
     return redirect('home')
+def u_search(request):
+    if (request.user.is_authenticated):
+        if request.method == 'POST':
+            query = request.POST.get('query')
+            if query:
+                searched_train = Train.objects.filter(train_number=query).first()
+                if searched_train:
+                    return render(request, 'searched_train.html', {'searched_train': searched_train})
+                else:
+                    message = "Train not found."
+                    return render(request, 'user_search.html', {'query': query, 'message': message})
+            else:
+                message = "Please provide a train number."
+                return render(request, 'user_search.html', {'message': message})
+        else:
+            return render(request, 'user_search.html')
+    else:
+        return redirect('user_login')
         
+def searched_train(request, train_number):
+    train = get_object_or_404(Train, train_number=train_number)
+    context = {'train': train}
+    return render(request, 'searched_train.html', context)
+from django.http import JsonResponse
 
+def get_train_number_suggestions(request):
+    input_text = request.GET.get('input', '')
+    
+    # Fetch train numbers that start with the input_text
+    suggestions = Train.objects.filter(train_number__startswith=input_text).values_list('train_number', flat=True)
+    
+    return JsonResponse({'suggestions': list(suggestions)})
     

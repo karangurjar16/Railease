@@ -42,6 +42,7 @@ h6 {
 # Main
 --------------------------------------------------------------*/
 #main {
+  align-items: center;
   margin-top: 60px;
   padding: 20px 30px;
   transition: all 0.3s;
@@ -57,8 +58,9 @@ h6 {
 # Page Title
 --------------------------------------------------------------*/
 .pagetitle {
+  text-align: center;
   margin-top: 10px;
-  /* margin-bottom: 100px; */
+  margin-bottom: 100px;
 }
 
 .pagetitle h1 {
@@ -66,6 +68,36 @@ h6 {
   margin-top: 0;
   font-weight: 600;
   color: #012970;
+}
+.search-bar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.search-form {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  display: flex;
+}
+
+.search-form input {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  outline: none;
+}
+
+.search-form button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-left: 5px;
 }
 /*--------------------------------------------------------------
 # Back to top button
@@ -218,6 +250,8 @@ h6 {
 
 /* Card */
 .card {
+  align-items: center;
+  justify-content: center;
   margin-bottom: 30px;
   border: none;
   border-radius: 5px;

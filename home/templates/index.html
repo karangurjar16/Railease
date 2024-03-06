@@ -67,19 +67,80 @@
 </ul>
 {% endblock %} {% block cont %}
 
-<main id="main" class="main">
-  <link
-    href="https://fonts.googleapis.com/icon?family=Material+Icons"
-    rel="stylesheet"
-  />
+<center>
+  <div
+    style="
+      color: Black;
+      border: 1px solid white;
+      border-radius: 8px;
+      background-color: white;
+      padding: 50px;
+    "
+  >
+    <h3><strong>Dashboard</strong></h3>
+    <hr />
 
-  <section class="section dashboard">
-    <button type="submit">
-      <p>
-        <a href="{% url 'book' %}" class="waves-effect waves-light btn">BOOK</a>
-      </p>
-    </button>
-  </section>
-</main>
+    <h3>
+      <a href="{%  url 'u_search'%}"
+        ><button
+          style="
+            width: 600px;
+            color: white;
+            border-radius: 8px;
+            height: 100px;
+            background-color: #333;
+          "
+        >
+          Search Train
+        </button></a
+      >
+    </h3>
+    <h3>
+      <a href="{% url 'search_train' %}"
+        ><button
+          style="
+            width: 600px;
+            color: white;
+            border-radius: 8px;
+            height: 100px;
+            background-color: #333;
+          "
+        >
+          Search Train
+        </button></a
+      >
+    </h3>
+    <h3>
+      <a href="#"
+        ><button
+          style="
+            width: 600px;
+            color: white;
+            border-radius: 8px;
+            height: 100px;
+            background-color: #333;
+          "
+        >
+          My Booking
+        </button></a
+      >
+    </h3>
+    <h3>
+      <a href="{% url 'user_logout' %}"
+        ><button
+          style="
+            width: 600px;
+            color: white;
+            border-radius: 8px;
+            height: 100px;
+            background-color: #333;
+          "
+        >
+          Logout
+        </button></a
+      >
+    </h3>
+  </div>
+</center>
 
 {%endblock%}

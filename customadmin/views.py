@@ -48,8 +48,12 @@ def dashboard(request):
     return render(request,'dashboard.html',{'x':x})
 
 def view_train(request):
-    objs = Train.objects.all()
-    return render(request,'view_train.html',{'objs':objs})
+    if (request.user.is_authenticated):
+        objs = Train.objects.all()
+        return render(request,'view_train.html',{'objs':objs})
+    else:
+        return redirect('admin_login')
+    
 
 def add_train(request):
     if request.method == 'POST':
