@@ -51,6 +51,8 @@ def book(request):
         return render(request,'booking.html')
     else:
         return redirect('user_login')
+def booking(request):
+    return redirect('home')
         
 
     
