@@ -1,0 +1,17 @@
+{% extends "base.html" %} {%block nav%} {%endblock%} {%block content%}
+<main id="main" class="main">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Update Train</h5>
+      </div>
+      <main id="main">
+        <div class="container-fluid mt-4">
+            <h2>Train {{ train_number }} Updated Successfully</h2>
+            <p><a href="{% url 'search_train' %}">Back to Search Trains</a></p>
+        </div>
+    </div>
+  </div>
+</main>
+
+{%endblock%}

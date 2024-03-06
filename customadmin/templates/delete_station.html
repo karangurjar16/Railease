@@ -1,0 +1,38 @@
+{% extends "base.html" %} {% block content %}
+<main id="main" class="main">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Delete Station - {{ station.station_code }}</h5>
+        <div class="card-content">
+          <span class="card-title"
+            >Delete station - {{ station.station_code }}</span
+          >
+
+          {% if station.station_code %}
+          <p>Are you sure you want to delete this station?</p>
+
+          <form
+            method="post"
+            action="{% url 'delete_station' station_code=station.station_code %}"
+          >
+            {% csrf_token %}
+            <button class="btn waves-effect waves-light red" type="submit">
+              Delete station
+            </button>
+          </form>
+
+          <p>
+            <a
+              href="{% url 'search_station' %}"
+              class="waves-effect waves-light btn"
+              >Cancel</a
+            >
+          </p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock %}

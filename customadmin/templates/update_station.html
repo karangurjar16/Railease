@@ -1,0 +1,23 @@
+{% extends "base.html" %} {%block nav%} {%endblock%} {%block content%}
+<main id="main" class="main">
+ 
+    <div class="card">
+      <div class="center-align">
+      <div class="card-body">
+        <h3 class="card-title">update Stations</h3>
+      </div>
+          <h2>Update Station - {{ station.station_code }}</h2>
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}   
+        <button type="submit">Update Station</button>
+    </form>
+
+    <p><a href="{% url 'search_station' %}">Back to Search Stations</a></p>
+        </div>
+    </div>
+  </div>
+</main>
+
+{%endblock%} 

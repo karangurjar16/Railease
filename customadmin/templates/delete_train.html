@@ -1,0 +1,110 @@
+{% extends "base.html" %} {% block nav%}
+<ul id="nav-mobile" class="right hide-on-med-and-down">
+  {% if request.user.is_authenticated %}
+
+  <a
+    class="nav-link nav-profile d-flex align-items-center pe-0"
+    href="#"
+    data-bs-toggle="dropdown"
+  >
+    <span class="d-none d-md-block dropdown-toggle ps-2"
+      >{{request.user.username}}</span
+    > </a
+  ><!-- End Profile Iamge Icon -->
+  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+    <li class="dropdown-header">
+      <h6>{{request.user.first_name}} {{request.user.last_name}}</h6>
+      <span>Web Designer</span>
+    </li>
+    <li>
+      <hr class="dropdown-divider" />
+    </li>
+
+    <li>
+      <a class="dropdown-item d-flex align-items-center" href="#">
+        <i class="bi bi-person"></i>
+        <span>My Profile</span>
+      </a>
+    </li>
+    <li>
+      <hr class="dropdown-divider" />
+    </li>
+
+    <li>
+      <a
+        class="dropdown-item d-flex align-items-center"
+        href="users-profile.html"
+      >
+        <i class="bi bi-gear"></i>
+        <span>Account Settings</span>
+      </a>
+    </li>
+    <li>
+      <hr class="dropdown-divider" />
+    </li>
+
+    <li>
+      <a class="dropdown-item d-flex align-items-center" href="pages-faq.html">
+        <i class="bi bi-question-circle"></i>
+        <span>Need Help?</span>
+      </a>
+    </li>
+    <li>
+      <hr class="dropdown-divider" />
+    </li>
+
+    <li>
+      <a
+        class="dropdown-item d-flex align-items-center"
+        href="{% url 'admin_logout' %}"
+      >
+        <i class="bi bi-box-arrow-right"></i>
+        <span>Sign Out</span>
+      </a>
+    </li>
+  </ul>
+  <!-- End Profile Dropdown Items -->
+  {% else %}
+  <a href="{% url 'login' %}">Login</a>
+  {% comment %}
+  <a href="{% url 'signup' %}">Signup</a>
+  {% endcomment %} {% endif%}
+</ul>
+{%endblock%}{% block content %}
+<main id="main" class="main">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Delete Train - {{ train.train_number }}</h5>
+        <div class="card-content">
+          <span class="card-title"
+            >Delete Train - {{ train.train_number }}</span
+          >
+
+          {% if train.train_number %}
+          <p>Are you sure you want to delete this train?</p>
+
+          <form
+            method="post"
+            action="{% url 'delete_train' train_number=train.train_number %}"
+          >
+            {% csrf_token %}
+            <button class="btn waves-effect waves-light red" type="submit">
+              Delete Train
+            </button>
+          </form>
+
+          <p>
+            <a
+              href="{% url 'search_train' %}"
+              class="waves-effect waves-light btn"
+              >Cancel</a
+            >
+          </p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "base.html" %} {%block nav%} {%endblock%} {%block content%}
+<main id="main" class="main">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Add Station</h5>
+      </div>
+      <form
+        class="row g-3 needs-validation"
+        action="{% url 'add_station' %}"
+        method="post"
+      >
+        {% csrf_token %}
+
+        <!-- Train Number -->
+        <div class="col-12">
+          <label for="station_code" class="form-label">Station Code</label>
+          <input
+            type="text"
+            name="station_code"
+            class="form-control"
+            required
+          />
+        </div>
+
+        <!-- Train Name -->
+        <div class="col-12">
+          <label for="station_name" class="form-label">Station Name</label>
+          <input type="text" name="station_name" class="form-control" required />
+        </div>
+
+        <!-- Origin -->
+        <div class="col-12">
+          <label for="city" class="form-label">City</label>
+          <input type="text" name="city" class="form-control" required />
+        </div>
+
+        <!-- Destination -->
+        <div class="col-12">
+          <label for="state" class="form-label">State</label>
+          <input type="text" name="state" class="form-control" required />
+        </div>
+
+      
+
+        
+        <!-- Submit Button -->
+        <div class="col-12">
+          <button class="btn btn-primary w-100" type="submit">Add Station</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
+
+{%endblock%}

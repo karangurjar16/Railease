@@ -1,0 +1,124 @@
+{% extends "base.html" %} {%block nav%}<ul id="nav-mobile" class="right hide-on-med-and-down">
+  {% if request.user.is_authenticated %}
+  
+  <a
+    class="nav-link nav-profile d-flex align-items-center pe-0"
+    href="#"
+    data-bs-toggle="dropdown"
+  >
+  
+    <span class="d-none d-md-block dropdown-toggle ps-2"
+      >{{request.user.username}}</span
+    > </a
+  ><!-- End Profile Iamge Icon -->
+  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+    <li class="dropdown-header">
+      <h6>{{request.user.first_name}} {{request.user.last_name}}</h6>
+      <span>Web Designer</span>
+    </li>
+    <li>
+      <hr class="dropdown-divider" />
+    </li>
+  
+    <li>
+      <a class="dropdown-item d-flex align-items-center" href="#">
+        <i class="bi bi-person"></i>
+        <span>My Profile</span>
+      </a>
+    </li>
+    <li>
+      <hr class="dropdown-divider" />
+    </li>
+  
+    <li>
+      <a
+        class="dropdown-item d-flex align-items-center"
+        href="users-profile.html"
+      >
+        <i class="bi bi-gear"></i>
+        <span>Account Settings</span>
+      </a>
+    </li>
+    <li>
+      <hr class="dropdown-divider" />
+    </li>
+  
+    <li>
+      <a class="dropdown-item d-flex align-items-center" href="pages-faq.html">
+        <i class="bi bi-question-circle"></i>
+        <span>Need Help?</span>
+      </a>
+    </li>
+    <li>
+      <hr class="dropdown-divider" />
+    </li>
+  
+    <li>
+      <a class="dropdown-item d-flex align-items-center" href="{% url 'admin_logout' %}">
+          <i class="bi bi-box-arrow-right"></i>
+          <span>Sign Out</span>
+      </a>
+  </li>
+  </ul>
+  <!-- End Profile Dropdown Items -->
+  {% else %}
+  <a href="{% url 'login' %}">Login</a>
+  {% comment %} <a href="{% url 'signup' %}">Signup</a> {% endcomment %} 
+  {% endif%}
+  </ul> {%endblock%} {%block content%}
+<main id="main" class="main">
+  <div class="center-align">
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title">Search Trains</h3>
+      </div>
+      <form method="post">
+        {% csrf_token %}
+        <label for="query">Search by Train Number:</label>
+        <input type="text" name="query" value="{{ query }}" required />
+        <button type="submit">
+          <a class="waves-effect waves-light btn">Search</a>
+        </button>
+      </form>
+
+      <h4>Search Results</h4>
+      <table border="1">
+        <thead>
+          <tr>
+            <th>Train Number</th>
+            <th>Train Name</th>
+            <th>Origin</th>
+            <th>Destination</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for train in results %}
+          <tr>
+            <td>{{ train.train_number }}</td>
+            <td>{{ train.train_name }}</td>
+            <td>{{ train.origin }}</td>
+            <td>{{ train.destination }}</td>
+            <td>
+              <a
+                class="waves-effect waves-light btn modal-trigger"
+                href="{% url 'update_train' train_number=train.train_number %}"
+                ><i class="material-icons">border_color</i></a
+              >
+              <a
+                class="waves-effect waves-light btn modal-trigger"
+                href="{% url 'delete_train' train_number=train.train_number %}"
+                ><i class="material-icons">delete</i></a
+              >
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <p><a href="{% url 'view_train' %}">Back to View Trains</a></p>
+
+      {%endblock%}
+    </div>
+  </div>
+</main>

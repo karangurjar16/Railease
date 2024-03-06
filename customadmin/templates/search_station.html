@@ -1,0 +1,56 @@
+{% extends "base.html" %} {%block nav%} {%endblock%} {%block content%}
+<main id="main" class="main">
+  <div class="center-align">
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title">Search Stations</h3>
+      </div>
+      <form method="post">
+        {% csrf_token %}
+        <label for="query">Search by Station Name:</label>
+        <input type="text" name="query" value="{{ query }}" required />
+        <button type="submit">
+          <a class="waves-effect waves-light btn">Search</a>
+        </button>
+      </form>
+
+      <h4>Search Results</h4>
+      <table border="1">
+        <thead>
+          <tr>
+            <th>Station Code</th>
+            <th>Station Name</th>
+            <th>City</th>
+            <th>State</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for station in results %}
+          <tr>
+            <td>{{station.station_code}}</td>
+            <td>{{station.station_name}}</td>
+            <td>{{station.city}}</td>
+            <td>{{station.state}}</td>
+            <td>
+              <a
+                class="waves-effect waves-light btn modal-trigger"
+                href="{% url 'update_station' station_code=station.station_code %}"
+                ><i class="material-icons">border_color</i></a
+              >
+              <a
+                class="waves-effect waves-light btn modal-trigger"
+                href="{% url 'delete_station' station_code=station.station_code %}"
+                ><i class="material-icons">delete</i></a
+              >
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <p><a href="{% url 'view_station' %}">Back to View Stations</a></p>
+
+      {%endblock%}
+    </div>
+  </div>
+</main>
