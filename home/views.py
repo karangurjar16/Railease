@@ -10,6 +10,7 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import authenticate, login
 from .forms import RegistrationForm, LoginForm
 from .models import *
+from django.http import JsonResponse
 
 # Create your views here.
 def index(request):
@@ -45,15 +46,23 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return redirect('home')
-def log(request):
-    return render(request,'log.html')
-def book(request):
-    if (request.user.is_authenticated):
-        return render(request,'booking.html')
-    else:
-        return redirect('user_login')
-def booking(request):
-    return redirect('home')
+
+
+def get_train(request):
+    train_number = request.GET.get('train_number')
+    payload = []
+    if train_number:
+        objs = Train.objects.filter(train_number__startswith=train_number)
+        for obj in objs:
+            payload.append({
+                'train_number' : obj.train_number
+            })
+
+    return JsonResponse({
+        'status':True,
+        'payload': payload
+    })
+
 def u_search(request):
     if (request.user.is_authenticated):
         if request.method == 'POST':
@@ -69,21 +78,14 @@ def u_search(request):
                 message = "Please provide a train number."
                 return render(request, 'user_search.html', {'message': message})
         else:
-            return render(request, 'user_search.html')
-    else:
-        return redirect('user_login')
-        
-def searched_train(request, train_number):
-    train = get_object_or_404(Train, train_number=train_number)
-    context = {'train': train}
-    return render(request, 'searched_train.html', context)
-from django.http import JsonResponse
 
-def get_train_number_suggestions(request):
-    input_text = request.GET.get('input', '')
-    
-    # Fetch train numbers that start with the input_text
-    suggestions = Train.objects.filter(train_number__startswith=input_text).values_list('train_number', flat=True)
-    
-    return JsonResponse({'suggestions': list(suggestions)})
+            return render(request, 'user_search.html')
+
+    else:
+
+        return redirect('user_login')
+
+
+
+
     

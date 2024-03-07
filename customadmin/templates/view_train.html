@@ -72,16 +72,15 @@
 </ul>
 {%endblock%} {%block content%}
 <main id="main" class="main">
-  <table>
+  <table class="table">
     <thead>
       <tr>
-        <th>Train No</th>
-        <th>Train Name</th>
-        <th>Origin</th>
-        <th>Destination</th>
+        <th scope="col">Train No</th>
+        <th scope="col">Train Name</th>
+        <th scope="col">Origin</th>
+        <th scope="col">Destination</th>
       </tr>
     </thead>
-
     <tbody>
       {% for obj in objs%}
       <tr>
