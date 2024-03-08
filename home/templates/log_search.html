@@ -1,0 +1,58 @@
+{% extends "basic1.html" %} {% block cont %}
+<main id="main" class="main">
+  <center>
+    <h5 class="card-title">Search Train</h5>
+  </center>
+
+  <div style="margin: 0 auto; max-width: 600px">
+    
+      <form method="post" action="{% url 'u_search'%}">
+        {% csrf_token %}
+        <div id="autocomplete" class="autocomplete">
+        <ul class="autocomplete-result-list"></ul>
+        <input
+          class="autocomplete-input"
+          type="text"
+          name="query"
+          required
+        />
+        <center>
+          <button type="submit">Search</button>
+        </center>
+      </form>
+    </div>
+  </div>
+</main>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<script>
+  new Autocomplete("#autocomplete", {
+    search: (input) => {
+      const url = `/get_train/?train_number=${input}`;
+      return new Promise((resolve) => {
+        fetch(url)
+          .then((response) => response.json())
+          .then((data) => {
+            resolve(data.payload);
+          });
+      });
+    },
+    renderResult: (result, props) => {
+      let group = "";
+      if (result.index % 3 == 0) {
+        group = `<li class="group">Group</li>`;
+      }
+      return `
+             ${group}
+             <li ${props}>
+                <div class="wiki-title">
+                    ${parseInt(result.train_number)}
+                </div>
+            </li>
+             `;
+    },
+  });
+</script>
+
+{% endblock %}

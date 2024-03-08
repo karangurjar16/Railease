@@ -3,18 +3,23 @@
 {% block cont %}
 <main id="main" class="main">
     <center>
-        <h5 class="card-title">Search Results for Train {{ train_number }}</h5>
-    </center>
-    <div>
-        {% if results %}
-            <ul>
-                {% for result in results %}
-                    <li>{{ result }}</li>
-                {% endfor %}
-            </ul>
+        {% if result %}
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Train Details</h5>
+                    <p class="card-text"><strong>Train Number:</strong> {{ result.train_number }}</p>
+                    <p class="card-text"><strong>Train Name:</strong> {{ result.train_name }}</p>
+                    <p class="card-text"><strong>Origin:</strong> {{ result.origin }}</p>
+                    <p class="card-text"><strong>Destination:</strong> {{ result.destination }}</p>
+                    <p class="card-text"><strong>Departure Time:</strong> {{ result.departure_time }}</p>
+                    <p class="card-text"><strong>Arrival Time:</strong> {{ result.arrival_time }}</p>
+                    <p class="card-text"><strong>Capacity:</strong> {{ result.capacity }}</p>
+                </div>
+            </div>
         {% else %}
-            <p>No results found.</p>
+            <h5 class="card-title">Search Results</h5>
+            <p class="alert alert-danger">{{ error_message }}</p>
         {% endif %}
-    </div>
+    </center>
 </main>
-{% endblock %}  
+{% endblock %}

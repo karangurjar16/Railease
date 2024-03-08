@@ -1,5 +1,5 @@
 from django.shortcuts import redirect, render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseNotFound
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login,logout
 from django.contrib import messages
@@ -49,43 +49,35 @@ def user_logout(request):
 
 
 def get_train(request):
-    train_number = request.GET.get('train_number')
-    payload = []
-    if train_number:
-        objs = Train.objects.filter(train_number__startswith=train_number)
-        for obj in objs:
-            payload.append({
-                'train_number' : obj.train_number
-            })
-
-    return JsonResponse({
-        'status':True,
-        'payload': payload
-    })
-
-def u_search(request):
-    if (request.user.is_authenticated):
-        if request.method == 'POST':
-            query = request.POST.get('query')
-            if query:
-                searched_train = Train.objects.filter(train_number=query).first()
-                if searched_train:
-                    return render(request, 'searched_train.html', {'searched_train': searched_train})
-                else:
-                    message = "Train not found."
-                    return render(request, 'user_search.html', {'query': query, 'message': message})
-            else:
-                message = "Please provide a train number."
-                return render(request, 'user_search.html', {'message': message})
-        else:
-
-            return render(request, 'user_search.html')
-
+    if request.user.is_authenticated and not request.user.is_superuser:
+        if 'term' in request.GET:
+            term = request.GET.get('term')
+            qs = Train.objects.filter(train_number__icontains=term) | Train.objects.filter(train_name__icontains=term)
+            suggestions = [{'label': f"{train.train_number} - {train.train_name}", 'value': train.train_number} for train in qs]
+            return JsonResponse(suggestions, safe=False)
+        return render(request, 'user_search.html')
     else:
-
-        return redirect('user_login')
-
+        return redirect('user_login')  
 
 
+def searched_train(request):
+    selected_train_number_str = request.POST.get('selectedTrain', None)
 
-    
+    if selected_train_number_str is None:
+        error_message = "No train number provided."
+        return render(request, 'searched_train.html', {'error_message': error_message, 'result': None})
+
+    try:
+        selected_train_number = int(selected_train_number_str)
+    except (ValueError, TypeError):
+        error_message = f"Invalid train number: {selected_train_number_str}"
+        return render(request, 'searched_train.html', {'error_message': error_message, 'result': None})
+
+    try:
+        result = Train.objects.get(train_number=selected_train_number)
+        context = {'result': result}
+    except Train.DoesNotExist:
+        error_message = f"Train with number {selected_train_number} not found."
+        return render(request, 'searched_train.html', {'error_message': error_message, 'result': None})
+
+    return render(request, 'searched_train.html', context)
