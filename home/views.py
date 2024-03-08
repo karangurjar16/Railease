@@ -14,7 +14,9 @@ from django.http import JsonResponse
 
 # Create your views here.
 def index(request):
-    return render(request,'index.html')
+    if request.user.is_superuser:
+        logout(request) 
+    return render(request, 'index.html')
 
 def user_register(request):
     if request.method == 'POST':
