@@ -18,9 +18,9 @@ def user_register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect('index')  # Replace 'index' with your actual home page URL
+                user = form.save()
+                login(request, user)
+                return redirect('user_login')  # Replace 'index' with your actual home page URL
     else:
         form = RegistrationForm()
 
@@ -51,7 +51,7 @@ def book(request):
         return render(request,'booking.html')
     else:
         return redirect('user_login')
-def booking(request):
+def book(request):
     return redirect('home')
         
 
