@@ -1,26 +1,21 @@
 {% extends "base.html" %} {%block nav%} {%endblock%} {%block content%}
+
 <main id="main" class="main">
-  <table>
+  <table class="table">
     <thead>
       <tr>
-        <th>Station Code</th>
-        <th>Station Name</th>
-        <th>City</th>
-        <th>State</th>
+        <th scope="col">Station Code</th>
+        <th scope="col">Station Name</th>
       </tr>
     </thead>
-
     <tbody>
       {% for obj in objs%}
       <tr>
         <td>{{obj.station_code}}</td>
         <td>{{obj.station_name}}</td>
-        <td>{{obj.city}}</td>
-        <td>{{obj.state}}</td>
-      </tr>
+        
       {% endfor%}
     </tbody>
   </table>
 </main>
-
 {%endblock%}

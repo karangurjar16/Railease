@@ -39,7 +39,7 @@ def user_login(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('home')  # Replace 'index' with your actual home page URL
+                return redirect('home') 
     else:
         form = LoginForm()
 
@@ -85,4 +85,23 @@ def searched_train(request):
     return render(request, 'searched_train.html', context)
 
 def booking(request):
-    return render(request,'booking.html')
+    if request.method == 'POST':
+        source = request.POST.get('source', None)
+        destination = request.POST.get('destination', None)
+        print(source)
+        print(destination)
+        city_code1 = source.split(' - ')[0]
+        city_code2 = destination.split(' - ')[0]
+
+
+    return render(request,'booking.html',{'source': source, 'destination': destination})
+def get_station(request):
+    if request.user.is_authenticated and not request.user.is_superuser:
+        if 'term' in request.GET:
+            term = request.GET.get('term')
+            qs = Station.objects.filter(station_code__icontains=term) | Station.objects.filter(station_name__icontains=term)
+            suggestions = [{'label': f"{station.station_code} - {station.station_name}", 'value': station.station_code} for station in qs]
+            return JsonResponse(suggestions, safe=False)
+        return render(request, 'booking.html')
+    else:
+        return redirect('user_login')

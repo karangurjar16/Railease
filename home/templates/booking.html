@@ -1,5 +1,113 @@
 {% extends "basic1.html" %} {% block nav1 %}
 {% endblock %} {% block cont %}
+<main id="main" class="main">
+    <center>
+      <h5 class="card-title">Search Train</h5>
+    </center>
+  <div class="card">
+    <div class ="card-body">
+    <div class="container">
+      <form id="searchForm" action="{% url 'booking' %}" method="post">
+        {% csrf_token %}
+        <div class="row mt-4"> 
+            <div class = "col">
+            <div id="autocomplete" class="autocomplete">
+            <input id="tags" name="source" class="autocomplete-input" placeholder="Source"/>
+            <ul class="autocomplete-result-list"></ul>
+            </div>
+            <br>
+        </div>
+            <div class = "col">
+            <div id="autocomplete" class="autocomplete">
+                <input id="tags1" name="destination" class="autocomplete-input" placeholder="Destination"/>
+                <ul class="autocomplete-result-list"></ul>
+            </div>
+        </div>
+        </div>
+          <br>
+        <center>
+        <button type="submit" class ="btn btn-success btn-lg "id="submitBtn">Search</button>
+        </center>
+      </form>
+    </div>
+</div>
+</div>
+<div class="card">
+<div class = "card-body mt-4">
+    <div class="container text-center">
+        <div class="row">
+          <div class="col">
+            {{ source }}
+          </div>
+          
+          <div class="col-1">
+            <i class="bi bi-arrow-left-right"></i>
+          </div>
+          
+          <div class="col">
+            {{ destination }}
+          </div>
+        </div>
+      </div>
+      
+</div>
+</div>
+
+
+  </main>
+  
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  
+  <script>
+    $(function () {
+        var sourceInput = $("#tags");
+        var destinationInput = $("#tags1");
+
+        sourceInput.autocomplete({
+            source: "{% url 'get_station' %}",
+            select: function (event, ui) {
+                sourceInput.val(ui.item.label);
+                updateDestinationAutocomplete(ui.item.value, ui.item.label);
+                return false; // Prevent the default behavior
+            }
+        });
+
+        destinationInput.autocomplete({
+            source: "{% url 'get_station' %}",
+            select: function (event, ui) {
+                destinationInput.val(ui.item.label);
+                return false; // Prevent the default behavior
+            }
+        });
+
+        function updateDestinationAutocomplete(sourceValue, sourceLabel) {
+            destinationInput.autocomplete("option", "source", function (request, response) {
+                $.ajax({
+                    url: "{% url 'get_station' %}",
+                    dataType: "json",
+                    data: {
+                        term: request.term
+                    },
+                    success: function (data) {
+                        var filteredData = $.grep(data, function (item) {
+                            return item.value !== sourceValue;
+                        });
+                        // Modify the label of each item to include both station code and name
+                        filteredData = $.map(filteredData, function (item) {
+                            return {
+                                label:item.label,
+                                value: item.value
+                            };
+                        });
+                        response(filteredData);
+                    }
+                });
+            });
+        }
+    });
+</script>
+
 
 
 
