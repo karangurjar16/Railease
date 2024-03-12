@@ -48,7 +48,9 @@ def dashboard(request):
     if request.user.is_superuser:
         objs = Train.objects.all()
         x = len(objs)
-        return render(request, 'dashboard.html', {'x': x})
+        stat = Station.objects.all()
+        y = len(stat)
+        return render(request, 'dashboard.html', {'x': x,'y':y})
     else:
         logout(request)
         return redirect('admin_login') 
