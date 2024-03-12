@@ -7,6 +7,7 @@ from home.models import *
 from .forms import *
 from django.shortcuts import get_object_or_404
 from django.http import Http404 
+from django.contrib.auth.decorators import login_required
 
 
 def admin_login(request):
@@ -42,14 +43,23 @@ def admin_login(request):
         print(e)
 
 
+
 def dashboard(request):
-    objs = Train.objects.all()
-    x = len(objs)
-    return render(request,'dashboard.html',{'x':x})
+    if request.user.is_superuser:
+        objs = Train.objects.all()
+        x = len(objs)
+        return render(request, 'dashboard.html', {'x': x})
+    else:
+        logout(request)
+        return redirect('admin_login') 
 
 def view_train(request):
-    objs = Train.objects.all()
-    return render(request,'view_train.html',{'objs':objs})
+    if (request.user.is_authenticated):
+        objs = Train.objects.all()
+        return render(request,'view_train.html',{'objs':objs})
+    else:
+        return redirect('admin_login')
+    
 
 def add_train(request):
     if request.method == 'POST':

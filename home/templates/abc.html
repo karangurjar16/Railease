@@ -1,0 +1,46 @@
+{% extends "basic1.html" %} {% block nav1 %}
+
+{% endblock %} {% block cont %}
+<main id="main" class="main">
+    <section class="section dashboard">
+        <div class="row">
+            <div class="col-lg-10">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <center>
+                                <h5 class="card-title">Search Train</h5>
+                            </center>
+                            <div id="reportsChart"></div>
+                            <div class="card-body">
+                                <div class="search-bar">
+                                    <form method="post" action="{% url 'u_search'%}">
+                                        {% csrf_token %}
+                                        <label for="query">Search by Train Number:</label>
+                                        <input
+                                            type="text"
+                                            name="query"
+                                            id="trainNumberInput"
+                                            required
+                                        />
+                                        <div id="trainNumberSuggestions"></div>
+                                        <p style="color:red">{{ message }}</p>
+                                        <center>
+                                            <button type="submit">
+                                                <a>Search</a>
+                                            </button>
+                                        </center>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+
+
+{%endblock%}

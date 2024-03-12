@@ -62,14 +62,13 @@
   </ul>
   <!-- End Profile Dropdown Items -->
   {% else %}
-  <a href="{% url 'login' %}">Login</a>
+  <a href="{% url 'admin_login' %}">Login</a>
   {% comment %} <a href="{% url 'signup' %}">Signup</a> {% endcomment %} 
   {% endif%}
   </ul> {%endblock%} {%block content%}
 <main id="main" class="main">
   <div class="col-12">
-    <div class="card">
-      <div class="card-body">
+  
         <h5 class="card-title">Add Train</h5>
       </div>
       <form
