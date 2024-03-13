@@ -67,22 +67,22 @@ def searched_train(request):
 
     if selected_train_number_str is None:
         error_message = "No train number provided."
-        return render(request, 'searched_train.html', {'error_message': error_message, 'result': None})
+        return render(request, 'user_search.html', {'error_message': error_message, 'result': None})
 
     try:
         selected_train_number = int(selected_train_number_str)
     except (ValueError, TypeError):
         error_message = f"Invalid train number: {selected_train_number_str}"
-        return render(request, 'searched_train.html', {'error_message': error_message, 'result': None})
+        return render(request, 'user_search.html', {'error_message': error_message, 'result': None})
 
     try:
         result = Train.objects.get(train_number=selected_train_number)
         context = {'result': result}
     except Train.DoesNotExist:
         error_message = f"Train with number {selected_train_number} not found."
-        return render(request, 'searched_train.html', {'error_message': error_message, 'result': None})
+        return render(request, 'user_search.html', {'error_message': error_message, 'result': None})
 
-    return render(request, 'searched_train.html', context)
+    return render(request, 'user_search.html', context)
 
 def booking(request):
     if request.method == 'POST':
