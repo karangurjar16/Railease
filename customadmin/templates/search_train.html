@@ -73,13 +73,15 @@
 {%endblock%} {%block content%}
 <center>
 <main id="main" class="main">
-  <div class="center-align">
-        <h3 class="card-title">Search Trains</h3>
-      </div>
+    <div class="center-align">
+          <h3 class="card-title">Search Trains</h3>
+    </div>
       <form method="post">
         {% csrf_token %}
-        <label for="query">Search by Train Number:</label>
-        <input type="text" name="query" value="{{ query }}" required />
+        <div class="input-group mx-lg-4">
+          <input type="text" placeholder="Enter train number" class="form-control mx-lg-5" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="query" value="{{ query }}" required >
+        </div>
+      </br>
         <button type="submit">
           <a class="waves-effect waves-light btn">Search</a>
         </button>

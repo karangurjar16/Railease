@@ -50,7 +50,9 @@ def dashboard(request):
         x = len(objs)
         stat = Station.objects.all()
         y = len(stat)
-        return render(request, 'dashboard.html', {'x': x,'y':y})
+        use = User.objects.filter(is_superuser=False)
+        z = len(use)
+        return render(request, 'dashboard.html', {'x': x,'y':y,'z':z})
     else:
         logout(request)
         return redirect('admin_login') 
