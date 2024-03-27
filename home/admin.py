@@ -1,5 +1,4 @@
 from django.contrib import admin
-
 # Register your models here.
 from django.contrib import admin
 from .models import *
@@ -18,3 +17,4 @@ class StationAdmin(admin.ModelAdmin):
 class RouteAdmin(admin.ModelAdmin):
     list_display = ('train', 'station', 'charge', 'arrival_time', 'distance')
     list_filter = ('train', 'station')
+

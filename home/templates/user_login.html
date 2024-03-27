@@ -24,7 +24,7 @@
     />
 
     <!-- Vendor CSS Files -->
-    {% comment %}
+
     <link
       href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}"
       rel="stylesheet"
@@ -53,7 +53,6 @@
       href="{% static 'assets/vendor/simple-datatables/style.css' %}"
       rel="stylesheet"
     />
-    {% endcomment %}
 
     <!-- Template Main CSS File -->
     <link href="{% static 'assets/css/style.css' %}" rel="stylesheet" />
@@ -80,7 +79,7 @@
                 <div class="d-flex justify-content-center py-4">
                   <a href="#" class="logo d-flex align-items-center w-auto">
                     <img src="{% static 'assets/img/logo.png' %}" alt="" />
-                    <span class="d-none d-lg-block">NiceAdmin</span>
+                    <span class="d-none d-lg-block">RailEase</span>
                   </a>
                 </div>
                 <!-- End Logo -->
@@ -96,11 +95,7 @@
                       </p>
                     </div>
                     {% comment %}
-                    <form
-                      class="row g-3 needs-validation"
-                      action="{% url 'admin_login'%}"
-                      method="post"
-                    >
+                    <form method="post" action="{% url 'user_login' %}">
                       {% csrf_token %}
 
                       <div class="col-12">
@@ -141,13 +136,31 @@
                     <form method="post" action="{% url 'user_login' %}">
                       {% csrf_token %}
 
-                      <label for="username">Username:</label>
-                      <input type="text" name="username" required /><br />
-
-                      <label for="password">Password:</label>
-                      <input type="password" name="password" required /><br />
-
-                      <button type="submit">Login</button>
+                      <div>
+                        <label for="username">Username:</label>
+                        <input type="text" name="username" required /><br />
+                      </div>
+                      <br />
+                      <div>
+                        <label for="password">Password:</label>
+                        <input type="password" name="password" required /><br />
+                      </div>
+                      <br />
+                      <div>
+                        <div class="col-12">
+                          <button class="btn btn-primary w-100" type="submit">
+                            Login
+                          </button>
+                        </div>
+                      </div>
+                      <div class="col-12">
+                        <p class="small mb-0">
+                          Don't have an account?
+                          <a href="{% url 'user_register' %}"
+                            >Create an account</a
+                          >
+                        </p>
+                      </div>
                     </form>
 
                     {% if messages %}

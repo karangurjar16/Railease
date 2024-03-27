@@ -1,8 +1,9 @@
 from django.db import models
-
 from django.core.validators import MinValueValidator
 from django.contrib.auth.models import User
 # Create your models here.
+
+
 class Train(models.Model):
     train_number = models.CharField(max_length=50,primary_key = True)
     train_name = models.CharField(max_length=100)

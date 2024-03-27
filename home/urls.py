@@ -12,6 +12,8 @@ urlpatterns = [
     path('search/',searched_train, name='searched_train'),
     path('book/',booking, name='booking'),
     path('get_station/',get_station,name="get_station"),
+    path('user_profile/',user_profile,name="user_profile"),
+    path('booknow/', booknow, name='booknow'),
 
 
 

@@ -22,8 +22,9 @@
 </br>
 </br>
 
-  <center>
+<center>
     {% if result %}
+   
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">Train Details</h5>
@@ -36,9 +37,6 @@
                 <p class="card-text"><strong>Capacity:</strong> {{ result.capacity }}</p>
             </div>
         </div>
-    {% else %}
-        <h5 class="card-title">Search Results</h5>
-        <p class="alert alert-danger">{{ error_message }}</p>
     {% endif %}
 </center>
 </main>

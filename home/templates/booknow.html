@@ -1,0 +1,21 @@
+{% extends "basic1.html" %}
+{% block nav1 %} {% endblock %}
+{% block cont %}
+<main id="main" class="main">
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Booking Details</h5>
+                <div class="row">
+                    <div class="col">
+                        <p><strong>Date:</strong> {{ train_details.date }}</p>
+                        <p><strong>Train Number:</strong> {{ train_details.train_number }}</p>
+                        <p><strong>Train Name:</strong> {{ train_details.train_name }}</p>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
