@@ -1,0 +1,58 @@
+{% extends "basic1.html" %} {% block nav1 %} {% endblock %} {% block cont %} 
+{% if error %}
+<script>
+  window.location='{% url 'cancelation' %}'
+</script>
+{% endif %}
+<main id="main" class="main">
+  <div class="container">
+    <h3>Booking Cancellation</h3>
+    <hr />
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Train</th>
+          <th>Age</th>
+          <th>Gender</th>
+          <th>Date</th>
+          <th>Fare</th>
+          <th>Route</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for travel in pro %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ travel.name }}</td>
+          <td>
+            {{ travel.train.train_name }} ({{ travel.train.train_number }})
+          </td>
+          <td>{{ travel.age }}</td>
+          <td>{{ travel.gender }}</td>
+          <td>{{ travel.date1 }}</td>
+          <td>{{ travel.fare }}</td>
+          <td>{{ travel.route }}</td>
+          <td>Booking Confirmed</td>
+          <td>
+            {% if travel.date1 > now %}
+            <a
+              href="{% url 'delete_my_booking' travel.id %}"
+              class="btn btn-danger"
+              >Cancel</a
+            >
+            {% else %}
+            <button class="btn btn-secondary" disabled>Cancel</button>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</main>
+
+{% endblock %}

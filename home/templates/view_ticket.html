@@ -1,0 +1,96 @@
+{% extends "basic1.html" %} {% block nav1 %} {% endblock %} {% block cont %}
+<script>
+  function printDiv() {
+    var divContents = document.getElementById("mydiv").innerHTML;
+    var a = window.open("", "", "height=500, width=500");
+    a.document.write("<html>");
+    a.document.write("<body > <h1 align=center> RailEase <br>");
+    a.document.write(divContents);
+    a.document.write("</body></html>");
+    a.document.close();
+    a.print();
+  }
+</script>
+
+<main id="main" class="main">
+  <div
+    id="mydiv"
+    style="
+      color: Black;
+      border: 1px solid white;
+      border-radius: 8px;
+      background-color: white;
+      padding: 50px;
+    "
+  >
+    <h3><strong>Train Detail</strong></h3>
+    <hr />
+    <div class="container mb-5">
+      <div class="row">
+        <div class="col-10">
+          <div class="row">
+            <div class="col">
+              <b
+                ><span class="train-number"
+                  >{{book.travel.train.train_number }}|</span
+                ></b
+              >
+              {{ book.route }}
+            </div>
+            <div class="col">
+              <h6>
+                <i class="bi bi-currency-rupee"></i>{{ book.travel.fare }}
+              </h6>
+            </div>
+            <div class="w-1000"></div>
+            <div class="col mt-1">
+              <h4>{{ book.travel.train.train_name }}</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr />
+
+    <div class="container mt-xl-5">
+      {% for i in messages %}
+      <h3 style="color: red"><strong>! {{i}}</strong></h3>
+      {% endfor %}
+
+      <table class="table table-bordered" id="myTable">
+        <thead style="color: white; background-color: #333">
+          <tr>
+            <th>Name</th>
+            <th>Train Name & No.</th>
+            <th>Age</th>
+            <th>Gender</th>
+            <th>Date</th>
+            <th>Fare</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{book.travel.name}}</td>
+            <td>
+              {{book.travel.train.train_name}}.
+              {{book.travel.train.train_number}}
+            </td>
+            <td>{{book.travel.age}}</td>
+            <td>{{book.travel.gender}}</td>
+            <td>{{book.travel.date1}}</td>
+            <td>{{book.travel.fare}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <br />
+    <div>
+      <center>
+        <div class="col col-lg-2">
+          <a href="#" class="btn btn-primary" onclick="printDiv()">Print</a>
+        </div>
+      </center>
+    </div>
+  </div>
+</main>
+{% endblock %}

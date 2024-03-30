@@ -39,7 +39,7 @@ def user_login(request):
             if user is not None:
                 login(request, user)
                 if user.is_superuser:
-                    return render(request,'dashboard.html')
+                    return redirect('dashboard/')
                 else:
                     return redirect('home')
     else:
@@ -235,3 +235,43 @@ def my_booking(request):
     book = Book.objects.filter(user=user1)
     d = {'user':user1,'pro':pro,'book':book}
     return render(request,'my_booking.html',d)
+
+def view_ticket(request,pid):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    book = Book.objects.get(id=pid)
+    print(pid)
+    d = {'book':book}
+    return render(request,'view_ticket.html',d)
+
+from datetime import datetime, timedelta
+from django.utils import timezone
+
+from django.utils import timezone
+
+from datetime import timedelta
+from django.utils import timezone
+from django.shortcuts import render, redirect
+from .models import Register, Travel, Book
+
+def cancelation(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    user2 = User.objects.filter(username=request.user.username).get()
+    user1 = Register.objects.filter(user=user2).get()
+    pro = Travel.objects.filter(user=user1)
+    book = Book.objects.filter(user=user1)
+    now = timezone.now().date()
+    next_day = now + timedelta(days=1) # Get current date 
+    d = {'user': user1, 'pro': pro, 'book': book, 'now': next_day}
+    return render(request, 'cancelation.html', d)
+
+def delete_my_booking(request,pid):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    error=False
+    pro = Travel.objects.get(id=pid)
+    pro.delete()
+    error=True
+    d = {'error':error}
+    return render(request,'cancelation.html',d)
