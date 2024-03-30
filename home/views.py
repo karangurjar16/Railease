@@ -3,8 +3,6 @@ from django.http import HttpResponseNotFound
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login,logout
 from django.contrib import messages
-
-from django.shortcuts import get_object_or_404
 from django.http import Http404 
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import authenticate, login
@@ -33,16 +31,19 @@ def user_register(request):
 
 def user_login(request):
     if request.method == 'POST':
-        form = LoginForm(request, request.POST)
+        form = AuthenticationForm(request, request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('home') 
+                if user.is_superuser:
+                    return render(request,'dashboard.html')
+                else:
+                    return redirect('home')
     else:
-        form = LoginForm()
+        form = AuthenticationForm()
 
     return render(request, 'user_login.html', {'form': form})
 
@@ -92,46 +93,40 @@ from django.http import HttpResponse
 from django.db.models import Q
 from django.http import HttpResponse
 
-from datetime import datetime
+from datetime import date, datetime
 
 def booking(request):
     if request.method == 'POST':
         source = request.POST.get('source', None)
         destination = request.POST.get('destination', None)
-        journey_date = request.POST.get('date', None)  # Get the journey date
-        
-        # Convert journey date to datetime object
-        journey_date = datetime.strptime(journey_date, '%Y-%m-%d') if journey_date else None
-        
+        date = request.POST.get('date', None)
+        print(date)
+        journey_date = datetime.strptime(date, '%Y-%m-%d')
+        print(journey_date)
         city_code1 = source.split(" - ", 2)[1].lower() if ' - ' in source else source.lower() if source else None
         city_code2 = destination.split(" - ", 2)[1].lower() if ' - ' in destination else destination.lower() if destination else None
-
+        route = city_code1 + " - " + city_code2
         if city_code1 and city_code2 and journey_date:
-            # Check if city codes exist in the database
             if not Route.objects.filter(station=city_code1).exists() or not Route.objects.filter(station=city_code2).exists():
                 return HttpResponse("Invalid source or destination provided.")
 
             train_routes = Route.objects.filter(Q(station=city_code1) | Q(station=city_code2)) 
             my_values = set(item.train for item in train_routes)
-            train_id_to_number = {train.train_number for train in my_values} 
-            
+            train_id_to_number = {train.train_number for train in my_values}
             result = []
-            for route in sorted(train_id_to_number, key=lambda x: Route.objects.filter(train_id=x, station=city_code1).first().arrival_time):
-                ro1 = Route.objects.filter(train_id=route, station=city_code1)
-                ro2 = Route.objects.filter(train_id=route, station=city_code2)
-                
-                if ro1.exists() and ro2.exists():
-                    di1 = ro1.first().distance
-                    di2 = ro2.first().distance
-                    
+            for train_id in train_id_to_number:
+                routes1 = Route.objects.filter(train_id=train_id, station__iexact=city_code1)
+                routes2 = Route.objects.filter(train_id=train_id, station__iexact=city_code2)
+
+                if routes1.exists() and routes2.exists():
+                    route1 = routes1.first()
+                    route2 = routes2.first()
+                    di1 = route1.distance
+                    di2 = route2.distance
+
                     if di2 > di1:
-                        try:
-                            route1 = ro1.first()
-                            route2 = ro2.first()
                             total_distance = di2 - di1
-                            charge = route1.charge
-                            
-                            # Construct the result dictionary
+                            charge = route2.charge - route1.charge
                             result.append({
                                 'train_name': route1.train.train_name,
                                 'train_number': route1.train.train_number,
@@ -139,14 +134,12 @@ def booking(request):
                                 'end': route2.arrival_time,
                                 'charge': charge,
                                 'distance': total_distance,
-                                'journey_date': journey_date  # Add journey date to result
                             })
-                        except Train.DoesNotExist:
-                            print(f"Train with train_number {route} does not exist.")
-        else:
-            return HttpResponse("Please provide both source, destination, and journey date.")
-
-    return render(request, 'booking.html', {'result': result, 'source': source, 'destination': destination, 'journey_date': journey_date})
+        fare = charge
+        date = journey_date
+        helper = Helper.objects.create(route=route, date=date, charge=fare)
+        con = helper.id
+    return render(request, 'booking.html', {'result': result, 'source': source, 'destination': destination,'con':con,'date':date})
 
 
 def get_station(request):
@@ -167,16 +160,78 @@ def user_profile(request):
     }
     return render(request,'user_profile.html', context)
 
-def booknow(request):
-    # Logic to fetch train details based on train_number and date
-    # Assuming train_details is a dictionary containing train information
-    train_number = request.GET.get('train_number')
-    date = request.GET.get('date')
-    train_details = {
-        'train_number': train_number,
-        'train_name': 'Sample Train Name',
-        'date':date,
-          # Assuming date is passed as an argument to the view
-        # Add other train details as needed
-    }
-    return render(request, 'booknow.html', {'train_details': train_details})
+import hashlib
+
+
+
+def booknow(request, con, train_number):
+    helper = Helper.objects.get(id = con)
+    train = Train.objects.get(train_number=train_number)
+    charge = helper.charge
+    charge1 = int(charge)
+    error = False
+    user2 = User.objects.filter(username=request.user.username).get()
+    user1 = Register.objects.filter(user=user2).get()
+    route = helper.route
+    date = helper.date
+    pro = Travel.objects.filter(user=user1)
+    book = Book.objects.filter(user=user1)
+    total = 0
+    for i in pro:
+        if i.status!="set":
+            total = total + i.fare
+    passenger=0
+    
+    if request.method == "POST":    
+        name = request.POST["name"]
+        age = request.POST["age"]
+        gender = request.POST["gender"]
+    
+        passengers = Travel.objects.create(user=user1, train=train, name=name, gender=gender, age=age, route=route, date1=date, fare=charge)
+        book_ticket = Book.objects.create(travel=passengers, user=user1, route=route, date2=date, fare=total)
+        print(passengers)
+        if passengers:
+            error = True
+    d = {'charge':charge,'data2':train,'pro':pro,'total':total,'book':book,'route1':route,'error':error,'con':con,   }
+    return render(request, 'booknow.html', d)
+
+
+def Delete_passenger(request,pid,con,train_number):
+    data = Travel.objects.get(id=pid)
+    data.delete()
+    messages.info(request,'Passenger Deleted Successfully')
+    return redirect('booknow',con,train_number)
+
+def card_detail(request,total,con,train_number):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    error=False
+    data2 = Train.objects.get(train_number=train_number)
+    user2 = User.objects.filter(username=request.user.username).get()
+    user1 = Register.objects.filter(user=user2).get()
+    pro = Travel.objects.filter(user=user1)
+    book = Book.objects.filter(user=user1)
+    count=0
+    pro1 = 0
+    if request.method == "POST":
+        error=True
+        for i in pro:
+            count = i.name
+            if i.status != "set":
+                i.status="set"
+                i.save()
+        return redirect('my_booking')
+
+    total1=total
+    d = {'user':user1,'data2':data2,'pro':pro,'pro1':pro1,'total':total1,'book':book,'error':error,'count':count}
+    return render(request,'card_detail.html',d)
+
+def my_booking(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    user2 = User.objects.filter(username=request.user.username).get()
+    user1 = Register.objects.filter(user=user2).get()
+    pro = Travel.objects.filter(user=user1)
+    book = Book.objects.filter(user=user1)
+    d = {'user':user1,'pro':pro,'book':book}
+    return render(request,'my_booking.html',d)

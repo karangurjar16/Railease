@@ -140,6 +140,7 @@ def update_station(request,station_code):
 
     return render(request, 'update_station.html', {'form': form, 'station': station, 'station_code': station_code})
 
+
 def search_station(request):
     query = request.POST.get('query', '')
     
@@ -149,8 +150,6 @@ def search_station(request):
         results = Station.objects.all()
 
     return render(request, 'search_station.html', {'results': results, 'query': query})
-
-
 
 def delete_station(request, station_code):
     try:
@@ -167,3 +166,19 @@ def delete_station(request, station_code):
 def admin_logout(request):
     logout(request)
     return redirect('admin_login')
+
+
+def view_route(request):
+    objs = Route.objects.all()
+    return render(request,'view_route.html',{'objs':objs})
+
+
+def add_route(request):
+    if request.method == 'POST':
+        form = RouteForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('view_route')  # Redirect to a success URL after saving the form
+    else:
+        form = RouteForm()
+    return render(request, 'add_route.html', {'form': form})

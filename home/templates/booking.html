@@ -1,7 +1,12 @@
 {% extends "basic1.html" %} {% block nav1 %} {% endblock %} {% block cont %}
+<style>
+  .train-number {
+    font-size: 25px; /* Adjust the font size as per your preference */
+  }
+</style>
 <main id="main" class="main">
   <center>
-    <h5 class="card-title">Search Train</h5>
+    <h4 class="card-title">Search Train</h>
   </center>
   <div class="card">
     <div class="card-body">
@@ -40,7 +45,7 @@
             </div>
           </div>
           <div class="row mt-4">
-            <div class="col">
+            <div class="col-4">
               <label for="date">Date:</label>
               <input
                 type="date"
@@ -75,80 +80,57 @@
       </div>
     </div>
   </div>
+
   {% if source %}
   <div class="card">
     <div class="card-body mt-4">
-      <div class="container text-center">
-        <div class="row">
-          <div class="col">{{ source }}</div>
-          <div class="col-1">
-            <i class="bi bi-arrow-right"></i>
+      <div class="card">
+        <div class="card-body mt-4">
+          <div class="container text-center">
+            <div class="row">
+              <h6><b>Traveling Date : {{ date|date:"d-m-Y" }}</b></h6>
+              <div class="col mt-3">{{ source }}</div>
+              <div class="col-1 mt-3">
+                <i class="bi bi-arrow-right"></i>
+              </div>
+              <div class="col mt-3">{{ destination }}</div>
+            </div>
           </div>
-          <div class="col">{{ destination }}</div>
         </div>
       </div>
-    </div>
-  </div>
-
-  <div class="card mt-4">
-    <div class="card-body mt-4">
       <div class="container">
-        <div class="row">
-          <div class="col text-center">
-            <h5><b>Train Name</b></h5>
-          </div>
-          <div class="col text-center">
-            <h5><b>Train No</b></h5>
-          </div>
-          <div class="col text-center">
-            <h5><b>Start Time</b></h5>
-          </div>
-          <div class="col text-center">
-            <h5><b>End Time</b></h5>
-          </div>
-          <div class="col text-center">
-            <h5><b>Charge</b></h5>
-          </div>
-          <div class="col text-center">
-            <h5><b>Distance</b></h5>
-          </div>
-          <div class="col text-center">
-            <h5><b>Action</b></h5>
-          </div>
-        </div>
         {% for item in result %}
-        <div class="row mt-4">
-          <div class="col text-center">
-            <h5>{{ item.train_name }}</h5>
+        <div class="card-footer bg-transparent border-info mt-3"></div>
+
+        <div class="row">
+          <div class="col-10">
+            <div class="row">
+              <div class="col">
+                <b
+                  ><span class="train-number">{{ item.train_number }}|</span></b
+                >
+                {{ item.start }} <i class="bi bi-arrow-right"></i> {{ item.end}}
+              </div>
+              <div class="col">
+                <h6><i class="bi bi-currency-rupee"></i>{{ item.charge }}</h6>
+              </div>
+              <div class="w-1000"></div>
+              <div class="col mt-1"><h4>{{ item.train_name }}</h4></div>
+              <div class="col" style="color: blue">Runs Daily</div>
+              <div class="w-1000"></div>
+              <div class="col">Distance - {{ item.distance }}km</div>
+            </div>
           </div>
-          <div class="col text-center">
-            <h5>{{ item.train_number }}</h5>
-          </div>
-          <div class="col text-center">
-            <h5>{{ item.start }}</h5>
-          </div>
-          <div class="col text-center">
-            <h5>{{ item.end }}</h5>
-          </div>
-          <div class="col text-center">
-            <h5>{{ item.charge }}</h5>
-          </div>
-          <div class="col text-center">
-            <h5>{{ item.distance }}</h5>
-          </div>
-          <div class="col text-center">
-            <!-- Adding journey date here -->
-            <h5>{{ item.journey_date|date:"d-m-Y" }}</h5>
-          </div>
-          <div class="col text-center">
+          <div class="col col-lg-2">
             <a
-              href="{% url 'booknow' %}?train_number={{ item.train_number }}&date={{ item.journey_date }}"
+              href="{% url 'booknow' con item.train_number %}"
               class="btn btn-primary"
               >Book Now</a
             >
           </div>
         </div>
         {% endfor %}
+        <div class="card-footer bg-transparent border-info mt-3"></div>
       </div>
     </div>
   </div>

@@ -1,21 +1,131 @@
-{% extends "base.html" %} {%block nav%} {%endblock%} {%block content%}
+<style>
+  /* Add space between table columns */
+  table {
+    border-collapse: collapse;
+    width: 90%;
+  }
 
+  th, td {
+    padding: 8px; /* Adjust the value as needed */
+    text-align: left;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f2f2f2; /* Alternate row color */
+  }
+
+  th {
+    background-color: blue;
+    color: white;
+  }
+</style>
+
+
+{% extends "base.html" %} {%block nav%}
+<ul id="nav-mobile" class="right hide-on-med-and-down">
+  {% if request.user.is_authenticated %}
+
+  <a
+    class="nav-link nav-profile d-flex align-items-center pe-0"
+    href="#"
+    data-bs-toggle="dropdown"
+  >
+    <span class="d-none d-md-block dropdown-toggle ps-2"
+      >{{request.user.username}}</span
+    > </a
+  ><!-- End Profile Iamge Icon -->
+  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+    <li class="dropdown-header">
+      <h6>{{request.user.first_name}} {{request.user.last_name}}</h6>
+      <span>Web Designer</span>
+    </li>
+    <li>
+      <hr class="dropdown-divider" />
+    </li>
+
+    <li>
+      <a class="dropdown-item d-flex align-items-center" href="#">
+        <i class="bi bi-person"></i>
+        <span>My Profile</span>
+      </a>
+    </li>
+    <li>
+      <hr class="dropdown-divider" />
+    </li>
+
+    <li>
+      <a
+        class="dropdown-item d-flex align-items-center"
+        href="users-profile.html"
+      >
+        <i class="bi bi-gear"></i>
+        <span>Account Settings</span>
+      </a>
+    </li>
+    <li>
+      <hr class="dropdown-divider" />
+    </li>
+
+    <li>
+      <a class="dropdown-item d-flex align-items-center" href="pages-faq.html">
+        <i class="bi bi-question-circle"></i>
+        <span>Need Help?</span>
+      </a>
+    </li>
+    <li>
+      <hr class="dropdown-divider" />
+    </li>
+
+    <li>
+      <a
+        class="dropdown-item d-flex align-items-center"
+        href="{% url 'admin_logout' %}"
+      >
+        <i class="bi bi-box-arrow-right"></i>
+        <span>Sign Out</span>
+      </a>
+    </li>
+  </ul>
+  <!-- End Profile Dropdown Items -->
+  {% else %}
+  <a href="{% url 'admin_login' %}">Login</a>
+  {% comment %}
+  <a href="{% url 'signup' %}">Signup</a>
+  {% endcomment %} {% endif%}
+</ul>
+{%endblock%} {%block content%}
+<center>
 <main id="main" class="main">
-  <table class="table">
-    <thead>
-      <tr>
-        <th scope="col">Station Code</th>
-        <th scope="col">Station Name</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for obj in objs%}
-      <tr>
-        <td>{{obj.station_code}}</td>
-        <td>{{obj.station_name}}</td>
-        
-      {% endfor%}
-    </tbody>
-  </table>
+  <div class="center-align">
+      </div>
+      <form method="post">
+        {% csrf_token %}
+      </form>
+
+      <table border="2">
+        <thead >
+          <tr>
+            <th>Sr no.</th>
+            <th>Station Code</th>
+            <th>Station Code Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for obj in objs %}
+          <center>
+          <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{ obj.station_code }}</td>
+            <td>{{ obj.station_name }}</td>
+           
+          </tr>
+        </center>
+          {% endfor %}
+        </tbody>
+      </table>
+
+    </div>
+  </div>
 </main>
+</center>
 {%endblock%}

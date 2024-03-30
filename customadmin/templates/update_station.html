@@ -1,23 +1,88 @@
-{% extends "base.html" %} {%block nav%} {%endblock%} {%block content%}
+<style>
+  /* Center-align form */
+  .center-align {
+    text-align: center;
+  }
+
+  /* Form container */
+  .update-form {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+
+  /* Form group */
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  /* Label styles */
+  label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+  }
+
+  /* Input styles */
+  input[type="text"],
+  input[type="password"],
+  select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+
+  /* Button styles */
+  .btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn:hover {
+    background-color: #0056b3;
+  }
+</style>
+
+{% extends "base.html" %}
+
+{% block content %}
 <main id="main" class="main">
- 
-    <div class="card">
-      <div class="center-align">
-      <div class="card-body">
-        <h3 class="card-title">update Stations</h3>
-      </div>
-          <h2>Update Station - {{ station.station_code }}</h2>
-    </div>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}   
-        <button type="submit">Update Station</button>
-    </form>
-
-    <p><a href="{% url 'search_station' %}">Back to Search Stations</a></p>
-        </div>
-    </div>
+  <div class="center-align">
+    <h3 class="card-title">Update Station</h3>
   </div>
-</main>
 
-{%endblock%} 
+  <form method="post" class="update-form">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="id_station_code">Station Code:</label>
+      {{ form.station_code }}
+    </div>
+    <div class="form-group">
+      <label for="id_station_name">Station Name:</label>
+      {{ form.station_name }}
+    </div>
+    <div class="form-group">
+      <label for="id_city">City:</label>
+      {{ form.city }}
+    </div>
+    <div class="form-group">
+      <label for="id_state">State:</label>
+      {{ form.state }}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Update Station</button>
+  </form>
+</main>
+{% endblock %}

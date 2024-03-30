@@ -17,5 +17,7 @@ urlpatterns = [
     path('add_station/',add_station,name = "add_station"),
     path('update_station/<str:station_code>/', update_station, name='update_station'),
     path('delete_station/<str:station_code>/', delete_station, name='delete_station'),
+    path('view_route/',view_route,name="view_route"),
+    path('add_route/', add_route, name='add_route'),
 
 ]

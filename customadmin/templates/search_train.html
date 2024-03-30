@@ -1,3 +1,27 @@
+<style>
+  /* Add space between table columns */
+  table {
+    border-collapse: collapse;
+    width: 125%;
+  }
+
+  th, td {
+    padding: 8px; /* Adjust the value as needed */
+    text-align: left;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f2f2f2; /* Alternate row color */
+  }
+
+  th {
+    background-color: blue;
+    color: white;
+  }
+</style>
+
+
+
 {% extends "base.html" %} {%block nav%}
 <ul id="nav-mobile" class="right hide-on-med-and-down">
   {% if request.user.is_authenticated %}
@@ -73,22 +97,20 @@
 {%endblock%} {%block content%}
 <center>
 <main id="main" class="main">
-    <div class="center-align">
-          <h3 class="card-title">Search Trains</h3>
-    </div>
+  <div class="center-align">
+        <h3 class="card-title">Search Trains</h3>
+      </div>
       <form method="post">
         {% csrf_token %}
-        <div class="input-group mx-lg-4">
-          <input type="text" placeholder="Enter train number" class="form-control mx-lg-5" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="query" value="{{ query }}" required >
-        </div>
-      </br>
+        <label for="query">Search by Train Number:</label>
+        <input type="text" name="query" value="{{ query }}" required />
         <button type="submit">
           <a class="waves-effect waves-light btn">Search</a>
         </button>
       </form>
 
       <h4>Search Results</h4>
-      <table border="1">
+      <table border="2">
         <thead>
           <tr>
             <th>Train Number</th>

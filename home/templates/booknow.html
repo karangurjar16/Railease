@@ -1,21 +1,115 @@
-{% extends "basic1.html" %}
-{% block nav1 %} {% endblock %}
-{% block cont %}
+{% extends "basic1.html" %} {% block nav1 %} {% endblock %} {% block cont %}
+{% if error %}
+<script>
+    alert('Passenger Added Successfully')
+    window.location='{% url 'booknow' con data2.train_number %}'
+</script>
+{% endif %}
 <main id="main" class="main">
-    <div class="container mt-4">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Booking Details</h5>
-                <div class="row">
-                    <div class="col">
-                        <p><strong>Date:</strong> {{ train_details.date }}</p>
-                        <p><strong>Train Number:</strong> {{ train_details.train_number }}</p>
-                        <p><strong>Train Name:</strong> {{ train_details.train_name }}</p>
-                        
-                    </div>
-                </div>
+  <div class="container mt-4">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Journey Details</h5>
+        <div class="row">
+          <div class="col-10">
+            <div class="row">
+              <div class="col">
+                <b
+                  ><span class="train-number">{{ data2.train_number }}|</span></b
+                >
+                {{ route1 }} 
+              </div>
+              <div class="col">
+                <h6><i class="bi bi-currency-rupee"></i>{{ charge }}</h6>
+              </div>
+              <div class="w-1000"></div>
+              <div class="col mt-1"><h4>{{ data2.train_name }}</h4></div>
+              <div class="col" style="color: blue">Runs Daily</div>
             </div>
+          </div>
         </div>
+      </div>
     </div>
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">ADD Passenger Details</h5>
+        <form action="" method="post">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="name">Name:</label>
+            <input
+              type="text"
+              class="form-control"
+              id="name"
+              name="name"
+              required
+            />
+          </div></br>
+          <div class="form-group">
+            <label for="age">Age:</label>
+            <input
+              type="number"
+              class="form-control"
+              id="age"
+              name="age"
+              required
+            />
+          </div></br>
+          <div class="form-group">
+            <label for="gender">Gender:</label>
+            <select class="form-control" id="gender" name="gender" required>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </br>
+          <button type="submit" class="btn btn-primary">Add Passenger</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <table class="table table-bordered" id="myTable">
+    <thead style="color:white;background-color:#333">
+    <tr>
+      <th>Sr No</th>
+      <th>Name</th>
+        <th>Train Name & No.</th>
+        <th>Route</th>
+        <th> Age</th>
+      <th>Gender</th>
+      <th>Date</th>
+      <th>Fare</th>
+      <th>Action</th>
+    </tr>
+    </thead>
+     <tbody>
+  
+      {% for i in pro %}
+  
+    <tr>
+  {% if i.status != 'set' %}  
+      <td>{{forloop.counter}}</td>
+      <td>{{i.name}}</td>
+      <td>{{i.train.train_name}}. {{i.train.train_number}}</td>
+      <td>{{i.route}}</td>
+        <td>{{i.age}}</td>
+        <td>{{i.gender}}</td>
+        <td>{{i.date1}}</td>
+        <td>{{i.fare}}</td>
+      <td><a href="{% url 'delete_passenger' i.id con data2.train_number %}" style="color:red"><u>Delete</u></a></td>
+        {% endif %}
+  
+    </tr>
+  
+      {% endfor %}
+      </tbody>
+  </table>
+  
+   </div><br>
+  <div><h4><strong>Total = {{total}}</strong>
+      <button><a href="{% url 'card_detail' total con data2.train_number %}" style="color:#333">Book Now</a> </button></h4></div>
+  
+  </div>
 </main>
 {% endblock %}

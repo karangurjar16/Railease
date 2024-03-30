@@ -1,0 +1,49 @@
+{% extends "base.html" %} {% block content %} {%block nav%} {% endblock%}
+<main id="main" class="main">
+  <div class="col-12">
+    <h5 class="card-title">Add Route</h5>
+  </div>
+  <form
+    class="row g-3 needs-validation"
+    action="{% url 'add_route' %}"
+    method="post"
+  >
+    {% csrf_token %}
+
+    <!-- Train -->
+    <div class="col-12">
+      <label for="train" class="form-label">Train</label>
+      <input type="text" name="train" class="form-control" required />
+    </div>
+
+    <!-- Station -->
+    <div class="col-12">
+      <label for="station" class="form-label">Station</label>
+      <input type="text" name="station" class="form-control" required />
+    </div>
+
+    <!-- Charge -->
+    <div class="col-12">
+      <label for="charge" class="form-label">Charge</label>
+      <input type="text" name="charge" class="form-control" required />
+    </div>
+
+    <!-- Arrival Time -->
+    <div class="col-12">
+      <label for="arrival_time" class="form-label">Arrival Time</label>
+      <input type="time" name="arrival_time" class="form-control" required />
+    </div>
+
+    <!-- Distance -->
+    <div class="col-12">
+      <label for="distance" class="form-label">Distance</label>
+      <input type="number" name="distance" class="form-control" required />
+    </div>
+
+    <!-- Submit Button -->
+    <div class="col-12">
+      <button class="btn btn-primary w-100" type="submit">Add Route</button>
+    </div>
+  </form>
+</main>
+{% endblock %}

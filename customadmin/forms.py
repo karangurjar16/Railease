@@ -25,3 +25,8 @@ class StationUpdateForm(forms.ModelForm):
     class Meta:
         model = Station
         fields =['station_code','station_name','city','state']
+
+class RouteForm(forms.ModelForm):
+    class Meta:
+        model = Route
+        fields =['train','station','charge','arrival_time','distance']

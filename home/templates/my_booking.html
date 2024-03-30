@@ -1,0 +1,78 @@
+{% extends "basic1.html" %} {% block nav1 %} {% endblock %} {% block cont %}
+
+<main id="main" class="main">
+  <style>
+    input[type="text"][type="password"] {
+      border-radius: 8px;
+      width: 600px;
+      height: 16px;
+    }
+  </style>
+
+  {% if error %}
+  <script>
+    alert('Booking Deleted Successfully')
+    window.location='{% url 'my_booking' %}'
+  </script>
+  {% endif %}
+  <div
+    style="
+      color: Black;
+      border: 1px solid white;
+      border-radius: 8px;
+      background-color: white;
+      padding: 50px;
+    "
+  >
+    <h3><strong>Booking Details</strong></h3>
+    <hr />
+
+    <div class="container">
+      <table class="table table-bordered" id="myTable">
+        <thead style="color: white; background-color: #333">
+          <tr>
+            <th>Sr No</th>
+            <th>Passenger</th>
+            <th>Train Name & No.</th>
+            <th>Age</th>
+            <th>Gender</th>
+            <th>Date</th>
+            <th>Fare</th>
+            <th>Travelling</th>
+            <th>Status</th>
+            <th>Action</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in pro %}
+
+          <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{i.name}}</td>
+            <td>{{i.train.train_name}}. {{i.train.tran_number}}</td>
+            <td>{{i.age}}</td>
+            <td>{{i.gender}}</td>
+            <td>{{i.date1}}</td>
+            <td>{{i.fare}}</td>
+            <td>{{i.route}}</td>
+            {% if i.status == 'set' %}
+            <td style="color: green">Booking Confirmed</td>
+            {% else %}
+            <td style="color: red">Pending</td>
+            {% endif %}
+            <td>
+              <a href="#" style="color: red"><u>Delete</u></a>
+            </td>
+            <td>
+              <a href="#" style="color: red"><u>View&nbsp;Ticket</u></a>
+            </td>
+          </tr>
+
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+{% endblock %}

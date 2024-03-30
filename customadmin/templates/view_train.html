@@ -1,3 +1,26 @@
+<style>
+  /* Add space between table columns */
+  table {
+    border-collapse: collapse;
+    width: 125%;
+  }
+
+  th, td {
+    padding: 8px; /* Adjust the value as needed */
+    text-align: left;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f2f2f2; /* Alternate row color */
+  }
+
+  th {
+    background-color: blue;
+    color: white;
+  }
+</style>
+
+
 {% extends "base.html" %} {%block nav%}
 <ul id="nav-mobile" class="right hide-on-med-and-down">
   {% if request.user.is_authenticated %}
@@ -71,27 +94,45 @@
   {% endcomment %} {% endif%}
 </ul>
 {%endblock%} {%block content%}
+<center>
 <main id="main" class="main">
-  <table class="table">
-    <thead>
-      <tr>
-        <th scope="col">Train No</th>
-        <th scope="col">Train Name</th>
-        <th scope="col">Origin</th>
-        <th scope="col">Destination</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for obj in objs%}
-      <tr>
-        <td>{{obj.train_number}}</td>
-        <td>{{obj.train_name}}</td>
-        <td>{{obj.origin}}</td>
-        <td>{{obj.destination}}</td>
-      </tr>
-      {% endfor%}
-    </tbody>
-  </table>
-</main>
+  <div class="center-align">
+      </div>
+      <form method="post">
+        {% csrf_token %}
+      </form>
 
+      <table border="2">
+        <thead style="margin-right:50px">
+          <tr>
+            <th>Sr no.</th>
+            <th>Train Number</th>
+            <th>Train Name</th>
+            <th>Origin</th>
+            <th>Destination</th>
+            <th >Departure Time</th>
+            <th>Arrival Time</th>
+            <th>Capacity</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for obj in objs %}
+          <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{ obj.train_number }}</td>
+            <td>{{ obj.train_name }}</td>
+            <td>{{ obj.origin }}</td>
+            <td>{{ obj.destination }}</td>
+            <td>{{ obj.departure_time }}</td>
+            <td>{{ obj.arrival_time }}</td>
+            <td>{{ obj.capacity }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+</main>
+</center>
 {%endblock%}
