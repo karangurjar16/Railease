@@ -153,19 +153,90 @@ def get_station(request):
     else:
         return redirect('user_login')
 
+from django.shortcuts import render, redirect
+from .models import Register
+
+from django.shortcuts import render, redirect
+from .models import Register
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import User  # Import the User model
+from .models import Register
+
 def user_profile(request):
     user = request.user
+    try:
+        profile = Register.objects.get(user=user)
+    except Register.DoesNotExist:
+        profile = None
+    
+    if request.method == 'POST':
+        # Get form data
+        full_name = request.POST.get('fullName')
+        about = request.POST.get('about')
+        mobile = request.POST.get('phone')
+        address = request.POST.get('address')
+        email = request.POST.get('email')
+
+        if full_name:
+            # Split full name into first name and last name
+            if ' ' in full_name:
+                first_name, last_name = full_name.split(' ', 1)
+            else:
+                first_name = full_name
+                last_name = ''
+        else:
+            first_name = ''
+            last_name = ''
+
+        if profile is None:
+            # If profile doesn't exist, create a new one
+            profile = Register.objects.create(
+                user=user,
+                mobile=mobile,
+                add=address,
+                about=about,
+                # Assign first name and last name
+                fname=first_name,
+                lname=last_name
+                # Add other fields as needed
+            )
+        else:
+            # If profile exists, update its fields
+            profile.mobile = mobile
+            profile.add = address
+            profile.about = about
+            # Update first name and last name in the User model
+            user.first_name = first_name
+            user.last_name = last_name
+            user.email = email
+            user.save()  # Save the changes to the User model
+
+            # Update first name and last name in the Register model
+            profile.fname = first_name
+            profile.lname = last_name
+            profile.save()
+
+        # Redirect to user profile page
+        return redirect('user_profile')
+
     context = {
-        'user': user
+        'user': user,
+        'profile': profile
     }
-    return render(request,'user_profile.html', context)
+    return render(request, 'user_profile.html', context)
+
+
+
 
 import hashlib
 
 
+from django.utils import timezone
+import uuid
 
 def booknow(request, con, train_number):
-    helper = Helper.objects.get(id = con)
+    helper = Helper.objects.get(id=con)
     train = Train.objects.get(train_number=train_number)
     charge = helper.charge
     charge1 = int(charge)
@@ -178,22 +249,45 @@ def booknow(request, con, train_number):
     book = Book.objects.filter(user=user1)
     total = 0
     for i in pro:
-        if i.status!="set":
-            total = total + i.fare
-    passenger=0
-    
-    if request.method == "POST":    
+        if i.status != "set":
+            total += i.fare
+
+    if request.method == "POST":
         name = request.POST["name"]
         age = request.POST["age"]
         gender = request.POST["gender"]
-    
-        passengers = Travel.objects.create(user=user1, train=train, name=name, gender=gender, age=age, route=route, date1=date, fare=charge)
-        book_ticket = Book.objects.create(travel=passengers, user=user1, route=route, date2=date, fare=total)
+
+        # Generate unique travel_id
+        user_id = user1.user_id  # Assuming user_id is unique
+        timestamp = timezone.now().strftime("%H%M%S")
+        unique_id = str(uuid.uuid4())[:4]  # Get the first 8 characters of UUID
+        travel_id = f"T{user_id}{timestamp}{unique_id}"
+
+        passengers = Travel.objects.create(
+            user=user1,
+            train=train,
+            name=name,
+            travel_id=travel_id,  # Assign the generated travel_id
+            gender=gender,
+            age=age,
+            route=route,
+            date1=date,
+            fare=charge
+        )
+        book_ticket = Book.objects.create(
+            travel=passengers,
+            user=user1,
+            route=route,
+            date2=date,
+            fare=total
+        )
         print(passengers)
         if passengers:
             error = True
-    d = {'charge':charge,'data2':train,'pro':pro,'total':total,'book':book,'route1':route,'error':error,'con':con,   }
+
+    d = {'charge': charge, 'data2': train, 'pro': pro, 'total': total, 'book': book, 'route1': route, 'error': error, 'con': con}
     return render(request, 'booknow.html', d)
+
 
 
 def Delete_passenger(request,pid,con,train_number):

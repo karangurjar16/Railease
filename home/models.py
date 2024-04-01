@@ -9,6 +9,7 @@ class Register(models.Model):
     add = models.CharField(max_length=100,null=True)
     dob = models.DateField(null=True)
     gender = models.CharField(max_length=10,null=True)
+    about = models.CharField(max_length=1000,null=True)
     def __str__(self):
         return self.user.first_name
     
@@ -47,6 +48,7 @@ class Travel(models.Model):
     user = models.ForeignKey(Register, on_delete=models.CASCADE, null=True)
     train = models.ForeignKey(Train, on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=100, null=True)
+    travel_id = models.CharField(max_length=100, null=True, unique=True)  # Make it unique
     age = models.IntegerField(null=True)
     gender = models.CharField(max_length=30, null=True)
     route = models.CharField(max_length=100, null=True)
@@ -56,7 +58,6 @@ class Travel(models.Model):
 
     def __str__(self):
         return f"{self.user.user.username} - {self.train.train_number} - {self.name}"
-
 
 class Book(models.Model):
     travel = models.ForeignKey(Travel, on_delete=models.CASCADE, null=True)

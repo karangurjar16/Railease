@@ -1,4 +1,7 @@
-{% extends "basic1.html" %} {% block nav1 %} {% endblock %} {% block cont %}
+{% extends "basic1.html" %} 
+{% block nav1 %} 
+{% endblock %} 
+{% block cont %} 
 
 <main id="main" class="main">
   <style>
@@ -8,63 +11,60 @@
       height: 16px;
     }
   </style>
-
-  <div
-    style="
-      color: Black;
-      border: 1px solid white;
-      border-radius: 8px;
-      background-color: white;
-      padding: 50px;
-    "
-  >
-    <h3><strong>Booking Details</strong></h3>
-    <hr />
-
-    <div class="container">
-      <table class="table table-bordered" id="myTable">
-        <thead style="color: white; background-color: #333">
-          <tr>
-            <th>Sr No</th>
-            <th>Passenger</th>
-            <th>Train Name & No.</th>
-            <th>Age</th>
-            <th>Gender</th>
-            <th>Date</th>
-            <th>Fare</th>
-            <th>Travelling</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for i in pro %}
-
-          <tr>
-            <td>{{i.id}}</td>
-            <td>{{i.name}}</td>
-            <td>{{ i.train.train_name }} ({{ i.train.train_number }})</td>
-            <td>{{i.age}}</td>
-            <td>{{i.gender}}</td>
-            <td>{{i.date1}}</td>
-            <td>{{i.fare}}</td>
-            <td>{{i.route}}</td>
-            {% if i.status == 'set' %}
-            <td style="color: green">Booking Confirmed</td>
-            {% else %}
-            <td style="color: red">Pending</td>
-            {% endif %}
-            <td>
-              <a href="{% url 'view_ticket' i.id %}" style="color: red"
-                ><u>View&nbsp;Ticket</u></a
-              >
-            </td>
-          </tr>
-
-          {% endfor %}
-        </tbody>
-      </table>
+  <center>
+    <h4 class="card-title">Booking Details</h4>
+  </center>
+  <div class="card">
+    <div class="card-body mt-5 mb-3">
+      <div class="container">
+        {% if pro %}
+          <table class="table table-bordered" id="myTable">
+            <thead style="color: white; background-color: #333">
+              <tr>
+                <th>Travel ID</th>
+                <th>Passenger</th>
+                <th>Train Name & No.</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Date</th>
+                <th>Fare</th>
+                <th>Travelling</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for i in pro %}
+                <tr>
+                  <td>{{i.travel_id}}</td>
+                  <td>{{i.name}}</td>
+                  <td>{{ i.train.train_name }} ({{ i.train.train_number }})</td>
+                  <td>{{i.age}}</td>
+                  <td>{{i.gender}}</td>
+                  <td>{{i.date1}}</td>
+                  <td>{{i.fare}}</td>
+                  <td>{{i.route}}</td>
+                  {% if i.status == 'set' %}
+                    <td style="color: green">Booking Confirmed</td>
+                  {% else %}
+                    <td style="color: red">Pending</td>
+                  {% endif %}
+                  <td>
+                    <a href="{% url 'view_ticket' i.id %}" style="color: red"><u>View&nbsp;Ticket</u></a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <p>No booking details found.</p>
+        {% endif %}
+      </div>
     </div>
   </div>
 </main>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
 {% endblock %}
