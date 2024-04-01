@@ -9,7 +9,6 @@
     }
   </style>
 
-
   <div
     style="
       color: Black;
@@ -42,7 +41,7 @@
           {% for i in pro %}
 
           <tr>
-            <td>{{forloop.counter}}</td>
+            <td>{{i.id}}</td>
             <td>{{i.name}}</td>
             <td>{{ i.train.train_name }} ({{ i.train.train_number }})</td>
             <td>{{i.age}}</td>

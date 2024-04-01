@@ -1,4 +1,4 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.http import HttpResponseNotFound
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login,logout
@@ -239,9 +239,13 @@ def my_booking(request):
 def view_ticket(request,pid):
     if not request.user.is_authenticated:
         return redirect('login')
-    book = Book.objects.get(id=pid)
-    print(pid)
+    book = get_object_or_404(Travel, id=pid)
     d = {'book':book}
+    # patients = Book.objects.all()
+    
+    # for patient in patients:
+    #     print(patient.id)    
+    # print(pid)
     return render(request,'view_ticket.html',d)
 
 from datetime import datetime, timedelta
