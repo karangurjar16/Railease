@@ -1,12 +1,12 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.http import HttpResponseNotFound
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login,logout
+from django.contrib.auth import authenticate, login,logout,update_session_auth_hash
 from django.contrib import messages
 from django.http import Http404 
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import authenticate, login
-from .forms import RegistrationForm, LoginForm
+from .forms import *
 from .models import *
 from django.http import JsonResponse
 from django.db.models import Q
@@ -17,16 +17,17 @@ def index(request):
         logout(request) 
     return render(request, 'index.html')
 
+
 def user_register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-                user = form.save()
-                login(request, user)
-                return redirect('user_login')  # Replace 'index' with your actual home page URL
+            user = form.save()
+            register = Register.objects.create(user = user)
+            login(request, user)
+            return redirect('user_login')  # Replace 'user_login' with your actual login URL name
     else:
         form = RegistrationForm()
-
     return render(request, 'user_register.html', {'form': form})
 
 def user_login(request):
@@ -39,13 +40,16 @@ def user_login(request):
             if user is not None:
                 login(request, user)
                 if user.is_superuser:
-                    return redirect('dashboard/')
+                    return render(request,'dashboard.html')
                 else:
                     return redirect('home')
+            else:
+                return redirect('user_register')
     else:
         form = AuthenticationForm()
 
     return render(request, 'user_login.html', {'form': form})
+
 
 def user_logout(request):
     logout(request)
@@ -160,7 +164,7 @@ from django.shortcuts import render, redirect
 from .models import Register
 
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User  # Import the User model
+from django.contrib.auth.models import User  
 from .models import Register
 
 def user_profile(request):
@@ -177,9 +181,16 @@ def user_profile(request):
         mobile = request.POST.get('phone')
         address = request.POST.get('address')
         email = request.POST.get('email')
+        form = CustomPasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user) 
+            return redirect('user_profile') 
+        else:
+            form = CustomPasswordChangeForm(request.user)
 
         if full_name:
-            # Split full name into first name and last name
+           
             if ' ' in full_name:
                 first_name, last_name = full_name.split(' ', 1)
             else:
@@ -257,17 +268,16 @@ def booknow(request, con, train_number):
         age = request.POST["age"]
         gender = request.POST["gender"]
 
-        # Generate unique travel_id
-        user_id = user1.user_id  # Assuming user_id is unique
+        user_id = user1.user_id  
         timestamp = timezone.now().strftime("%H%M%S")
-        unique_id = str(uuid.uuid4())[:4]  # Get the first 8 characters of UUID
+        unique_id = str(uuid.uuid4())[:4]  
         travel_id = f"T{user_id}{timestamp}{unique_id}"
 
         passengers = Travel.objects.create(
             user=user1,
             train=train,
             name=name,
-            travel_id=travel_id,  # Assign the generated travel_id
+            travel_id=travel_id,  
             gender=gender,
             age=age,
             route=route,
@@ -329,18 +339,69 @@ def my_booking(request):
     book = Book.objects.filter(user=user1)
     d = {'user':user1,'pro':pro,'book':book}
     return render(request,'my_booking.html',d)
+from django.http import HttpResponse
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet
 
 def view_ticket(request,pid):
     if not request.user.is_authenticated:
         return redirect('login')
     book = get_object_or_404(Travel, id=pid)
-    d = {'book':book}
-    # patients = Book.objects.all()
-    
-    # for patient in patients:
-    #     print(patient.id)    
-    # print(pid)
-    return render(request,'view_ticket.html',d)
+    ticket_id = book.travel_id
+    train_name = book.train.train_name
+    train_number = book.train.train_number
+    route = book.route
+    name = book.name
+    age = book.age
+    gender = book.gender
+    date = book.date1
+    fare = book.fare
+
+    # Generate PDF content using ReportLab
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{ticket_id}.pdf"'
+
+    # Create a PDF document
+    doc = SimpleDocTemplate(response, pagesize=letter)
+    elements = []
+    header_style = getSampleStyleSheet()["Title"]
+    header_text = Paragraph("RAILEASE", header_style)
+    elements.append(header_text)
+
+    # Define ticket details data
+    data = [
+        ["Ticket ID:", ticket_id],
+        ["Train Name & No.:", f"{train_name} ({train_number})"],
+        ["Route:", route],
+        ["Name:", name],
+        ["Age:", age],
+        ["Gender:", gender],
+        ["Date:", date],
+        ["Fare:", fare]
+    ]
+
+    # Create table style
+    style = TableStyle([('BACKGROUND', (0, 0), (-1, 0), colors.gray),
+                        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+                        ('GRID', (0, 0), (-1, -1), 1, colors.black)])
+
+    # Create table and apply style
+    ticket_table = Table(data)
+    ticket_table.setStyle(style)
+
+    # Add table to document
+    elements.append(ticket_table)
+
+    # Build PDF document
+    doc.build(elements)
+
+    return response
 
 from datetime import datetime, timedelta
 from django.utils import timezone
@@ -360,7 +421,7 @@ def cancelation(request):
     pro = Travel.objects.filter(user=user1)
     book = Book.objects.filter(user=user1)
     now = timezone.now().date()
-    next_day = now + timedelta(days=1) # Get current date 
+    next_day = now + timedelta(days=1)
     d = {'user': user1, 'pro': pro, 'book': book, 'now': next_day}
     return render(request, 'cancelation.html', d)
 

@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 
-    <title>Your Django App - Dashboard</title>
+    <titleRailEase\</title>
     <meta content="" name="description" />
     <meta content="" name="keywords" />
 
@@ -62,9 +62,14 @@
   href="https://unpkg.com/@trevoreyre/autocomplete-js/dist/style.css"
 />
   </head>
-
-  <body>
-    <!-- ======= Header ======= -->
+  <style>
+    body {
+        background-image: url('{% static "assets/img/background.jpg" %}');
+        background-size: cover; /* Adjust as needed */
+        background-repeat: no-repeat; /* Adjust as needed */
+    }
+</style>
+  <body>    <!-- ======= Header ======= -->
     <header id="header" class="header fixed-top d-flex align-items-center">
       <div class="d-flex align-items-center justify-content-between">
         <a href="{% url 'home'%}" class="logo d-flex align-items-center">
