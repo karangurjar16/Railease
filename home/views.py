@@ -11,11 +11,16 @@ import uuid
 from django.http import JsonResponse
 from django.db.models import Q
 from django.http import HttpResponse
-
 from django.shortcuts import render, redirect
 from .models import Register
 from django.contrib.auth.models import User  
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
+
+from django.http import HttpResponse
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet
 
 # Create your views here.
 def index(request):
@@ -75,23 +80,23 @@ def get_train(request):
 
 
 def searched_train(request):
-    selected_train_number_str = request.POST.get('selectedTrain', None)
+    selected = request.POST.get('selectedTrain', None)
 
-    if selected_train_number_str is None:
+    if selected is None:
         error_message = "No train number provided."
         return render(request, 'user_search.html', {'error_message': error_message, 'result': None})
 
     try:
-        selected_train_number = int(selected_train_number_str)
+        selected = int(selected)
     except (ValueError, TypeError):
-        error_message = f"Invalid train number: {selected_train_number_str}"
+        error_message = f"Invalid train number: {selected}"
         return render(request, 'user_search.html', {'error_message': error_message, 'result': None})
 
     try:
-        result = Train.objects.get(train_number=selected_train_number)
+        result = Train.objects.get(train_number=selected)
         context = {'result': result}
     except Train.DoesNotExist:
-        error_message = f"Train with number {selected_train_number} not found."
+        error_message = f"Train with number {selected} not found."
         return render(request, 'user_search.html', {'error_message': error_message, 'result': None})
 
     return render(request, 'user_search.html', context)
@@ -103,10 +108,9 @@ def booking(request):
     if request.method == 'POST':
         source = request.POST.get('source', None)
         destination = request.POST.get('destination', None)
+
         date = request.POST.get('date', None)
-        print(date)
         journey_date = datetime.strptime(date, '%Y-%m-%d')
-        print(journey_date)
         city_code1 = source.split(" - ", 2)[1].lower() if ' - ' in source else source.lower() if source else None
         city_code2 = destination.split(" - ", 2)[1].lower() if ' - ' in destination else destination.lower() if destination else None
         route = city_code1 + " - " + city_code2
@@ -117,11 +121,12 @@ def booking(request):
             train_routes = Route.objects.filter(Q(station=city_code1) | Q(station=city_code2)) 
             my_values = set(item.train for item in train_routes)
             train_id_to_number = {train.train_number for train in my_values}
+            print(train_id_to_number)
             result = []
             for train_id in train_id_to_number:
                 routes1 = Route.objects.filter(train_id=train_id, station__iexact=city_code1)
                 routes2 = Route.objects.filter(train_id=train_id, station__iexact=city_code2)
-
+                print(routes1)
                 if routes1.exists() and routes2.exists():
                     route1 = routes1.first()
                     route2 = routes2.first()
@@ -290,7 +295,7 @@ def Delete_passenger(request,pid,con,train_number):
 
 def card_detail(request,total,con,train_number):
     if not request.user.is_authenticated:
-        return redirect('login')
+        return redirect('user_login')
     error=False
     data2 = Train.objects.get(train_number=train_number)
     user2 = User.objects.filter(username=request.user.username).get()
@@ -314,22 +319,18 @@ def card_detail(request,total,con,train_number):
 
 def my_booking(request):
     if not request.user.is_authenticated:
-        return redirect('login')
+        return redirect('user_login')
     user2 = User.objects.filter(username=request.user.username).get()
     user1 = Register.objects.filter(user=user2).get()
     pro = Travel.objects.filter(user=user1)
     book = Book.objects.filter(user=user1)
     d = {'user':user1,'pro':pro,'book':book}
     return render(request,'my_booking.html',d)
-from django.http import HttpResponse
-from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
-from reportlab.lib import colors
-from reportlab.lib.styles import getSampleStyleSheet
+
 
 def view_ticket(request,pid):
     if not request.user.is_authenticated:
-        return redirect('login')
+        return redirect('user_login')
     book = get_object_or_404(Travel, id=pid)
     ticket_id = book.travel_id
     train_name = book.train.train_name
@@ -381,19 +382,11 @@ def view_ticket(request,pid):
 
     return response
 
-from datetime import datetime, timedelta
-from django.utils import timezone
 
-from django.utils import timezone
-
-from datetime import timedelta
-from django.utils import timezone
-from django.shortcuts import render, redirect
-from .models import Register, Travel, Book
 
 def cancelation(request):
     if not request.user.is_authenticated:
-        return redirect('login')
+        return redirect('user_login')
     user2 = User.objects.filter(username=request.user.username).get()
     user1 = Register.objects.filter(user=user2).get()
     pro = Travel.objects.filter(user=user1)
@@ -405,7 +398,7 @@ def cancelation(request):
 
 def delete_my_booking(request,pid):
     if not request.user.is_authenticated:
-        return redirect('login')
+        return redirect('user_login')
     error=False
     pro = Travel.objects.get(id=pid)
     pro.delete()
