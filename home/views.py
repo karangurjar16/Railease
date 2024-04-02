@@ -1,15 +1,21 @@
 from django.shortcuts import get_object_or_404, redirect, render
-from django.http import HttpResponseNotFound
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login,logout,update_session_auth_hash
 from django.contrib import messages
-from django.http import Http404 
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import authenticate, login
 from .forms import *
 from .models import *
+from django.utils import timezone
+import uuid
 from django.http import JsonResponse
 from django.db.models import Q
+from django.http import HttpResponse
+
+from django.shortcuts import render, redirect
+from .models import Register
+from django.contrib.auth.models import User  
+from datetime import date, datetime
 
 # Create your views here.
 def index(request):
@@ -91,13 +97,7 @@ def searched_train(request):
     return render(request, 'user_search.html', context)
 
 
-from django.db.models import Q
-from django.http import HttpResponse
 
-from django.db.models import Q
-from django.http import HttpResponse
-
-from datetime import date, datetime
 
 def booking(request):
     if request.method == 'POST':
@@ -157,15 +157,6 @@ def get_station(request):
     else:
         return redirect('user_login')
 
-from django.shortcuts import render, redirect
-from .models import Register
-
-from django.shortcuts import render, redirect
-from .models import Register
-
-from django.shortcuts import render, redirect
-from django.contrib.auth.models import User  
-from .models import Register
 
 def user_profile(request):
     user = request.user
@@ -175,7 +166,6 @@ def user_profile(request):
         profile = None
     
     if request.method == 'POST':
-        # Get form data
         full_name = request.POST.get('fullName')
         about = request.POST.get('about')
         mobile = request.POST.get('phone')
@@ -207,10 +197,8 @@ def user_profile(request):
                 mobile=mobile,
                 add=address,
                 about=about,
-                # Assign first name and last name
                 fname=first_name,
                 lname=last_name
-                # Add other fields as needed
             )
         else:
             # If profile exists, update its fields
@@ -239,12 +227,6 @@ def user_profile(request):
 
 
 
-
-import hashlib
-
-
-from django.utils import timezone
-import uuid
 
 def booknow(request, con, train_number):
     helper = Helper.objects.get(id=con)
@@ -359,7 +341,6 @@ def view_ticket(request,pid):
     date = book.date1
     fare = book.fare
 
-    # Generate PDF content using ReportLab
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="{ticket_id}.pdf"'
 
@@ -369,8 +350,6 @@ def view_ticket(request,pid):
     header_style = getSampleStyleSheet()["Title"]
     header_text = Paragraph("RAILEASE", header_style)
     elements.append(header_text)
-
-    # Define ticket details data
     data = [
         ["Ticket ID:", ticket_id],
         ["Train Name & No.:", f"{train_name} ({train_number})"],
@@ -382,7 +361,6 @@ def view_ticket(request,pid):
         ["Fare:", fare]
     ]
 
-    # Create table style
     style = TableStyle([('BACKGROUND', (0, 0), (-1, 0), colors.gray),
                         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
                         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
